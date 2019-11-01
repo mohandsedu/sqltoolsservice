@@ -136,7 +136,7 @@ namespace Microsoft.SqlTools.ServiceLayer.ObjectExplorer.SmoModel
                         }
                         catch (Exception ex)
                         {
-                            Logger.Write(TraceEventType.Information, $"Invalid operation... ${ex}");
+                            Logger.Write(TraceEventType.Information, $"Invalid operation... ${i} - ${ex.SafeToString()}");
                         }
                     }
                     foreach (var smoObject in smoObjectList)
