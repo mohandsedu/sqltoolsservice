@@ -132,6 +132,7 @@ namespace Microsoft.SqlTools.ServiceLayer.ObjectExplorer.SmoModel
                         {
                             Logger.Write(TraceEventType.Information, $"Processing for ${i} time");
                             smoObjectList = querier.Query(context, propertyFilter, refresh, smoProperties).ToList();
+                            break;
                         }
                         catch (Exception ex)
                         {
