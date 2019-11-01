@@ -257,6 +257,7 @@ namespace Microsoft.SqlTools.Utility
             LogEvent logEvent,
             string logMessage)
         {
+            System.Diagnostics.Debug.WriteLine(logMessage);
             // If logger is initialized then use TraceSource else use Trace
             if (TraceSource != null)
             {

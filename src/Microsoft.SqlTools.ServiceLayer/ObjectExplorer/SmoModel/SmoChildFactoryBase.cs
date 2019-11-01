@@ -4,6 +4,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -35,9 +36,9 @@ namespace Microsoft.SqlTools.ServiceLayer.ObjectExplorer.SmoModel
                 OnExpandPopulateNonFolders(allChildren, parent, refresh, name, cancellationToken);
                 OnBeginAsyncOperations(parent);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                string error = string.Format(CultureInfo.InvariantCulture, "Failed expanding oe children. parent:{0} error:{1} inner:{2} stacktrace:{3}", 
+                string error = string.Format(CultureInfo.InvariantCulture, "Failed expanding oe children. parent:{0} error:{1} inner:{2} stacktrace:{3}",
                     parent != null ? parent.GetNodePath() : "", ex.Message, ex.InnerException != null ? ex.InnerException.Message : "", ex.StackTrace);
                 Logger.Write(TraceEventType.Error, error);
                 throw ex;
@@ -124,7 +125,19 @@ namespace Microsoft.SqlTools.ServiceLayer.ObjectExplorer.SmoModel
                 string propertyFilter = GetProperyFilter(filters, querier.GetType(), serverValidFor);
                 try
                 {
-                    var smoObjectList = querier.Query(context, propertyFilter, refresh, smoProperties).ToList();
+                    List<SqlSmoObject> smoObjectList = new List<SqlSmoObject>();
+                    for (var i = 0; i < 15; i++)
+                    {
+                        try
+                        {
+                            Logger.Write(TraceEventType.Information, $"Processing for ${i} time");
+                            smoObjectList = querier.Query(context, propertyFilter, refresh, smoProperties).ToList();
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Write(TraceEventType.Information, $"Invalid operation... ${ex}");
+                        }
+                    }
                     foreach (var smoObject in smoObjectList)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
